@@ -401,7 +401,7 @@ ul {
             rgba(0, 0, 0, 0.55),
             rgba(0, 0, 0, 0.35)
         ),
-        url("images/hero.jpg") center/cover no-repeat;
+        url("hero.jpg") center/cover no-repeat;
 
     overflow: hidden;
 }

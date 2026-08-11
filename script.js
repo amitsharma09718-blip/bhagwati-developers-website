@@ -114,36 +114,26 @@ window.addEventListener("scroll", function () {
 });
 
 
+
+
 /* =========================
-   4. REGISTRATION FORM
-   ========================= */
+4. REGISTRATION FORM
+========================= */
 
 const registrationForm =
     document.getElementById("registrationForm");
 
-
 if (registrationForm) {
 
-    registrationForm.addEventListener("submit", function (event) {
+    registrationForm.addEventListener("submit", async function (event) {
 
-        /*
-         IMPORTANT:
-
-         Netlify Forms ke liye form ko
-         actually submit hone dena hai.
-
-         Isliye preventDefault() use nahi
-         kar rahe hain.
-        */
-
+        event.preventDefault();
 
         const name =
             document.getElementById("name").value.trim();
 
-
         const phone =
             document.getElementById("phone").value.trim();
-
 
         const email =
             document.getElementById("email").value.trim();
@@ -157,12 +147,9 @@ if (registrationForm) {
 
             alert("Please enter your full name.");
 
-            event.preventDefault();
-
             document.getElementById("name").focus();
 
             return;
-
         }
 
 
@@ -172,19 +159,15 @@ if (registrationForm) {
 
         const phonePattern = /^[6-9][0-9]{9}$/;
 
-
         if (!phonePattern.test(phone)) {
 
             alert(
                 "Please enter a valid 10-digit Indian mobile number."
             );
 
-            event.preventDefault();
-
             document.getElementById("phone").focus();
 
             return;
-
         }
 
 
@@ -195,24 +178,80 @@ if (registrationForm) {
         const emailPattern =
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-
         if (!emailPattern.test(email)) {
 
             alert("Please enter a valid email address.");
 
-            event.preventDefault();
-
             document.getElementById("email").focus();
 
             return;
-
         }
 
 
-        /*
-         If everything is valid,
-         Netlify will receive the form.
-        */
+        /* =========================
+           SUBMIT TO NETLIFY
+           ========================= */
+
+        const submitButton =
+            registrationForm.querySelector(".submit-btn");
+
+        if (submitButton) {
+
+            submitButton.disabled = true;
+
+            submitButton.innerHTML =
+                "Submitting...";
+        }
+
+
+        try {
+
+            const formData =
+                new FormData(registrationForm);
+
+            await fetch("/", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+
+                body:
+                    new URLSearchParams(formData).toString()
+
+            });
+
+
+            /* =========================
+               SUCCESS REDIRECT
+               ========================= */
+
+            window.location.href = "/success.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Form submission error:",
+                error
+            );
+
+            alert(
+                "Something went wrong. Please try again."
+            );
+
+
+            if (submitButton) {
+
+                submitButton.disabled = false;
+
+                submitButton.innerHTML =
+                    'Submit Registration <i class="fa-solid fa-arrow-right"></i>';
+            }
+
+        }
 
     });
 
